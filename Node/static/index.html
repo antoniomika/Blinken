@@ -25,7 +25,6 @@
             try {
                 var info = JSON.parse(data.data);
                 image.src = "data:image/jpeg;base64," + info.data;
-                console.log("Length:", info.data.length);
             } catch(err) {
                 console.log("JSON Parse failed");
             }
