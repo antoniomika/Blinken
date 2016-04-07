@@ -4,7 +4,7 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="1080" height="720">
+    <canvas id="canvas" width="auto" height="auto">
     </canvas>
 </body>
 
@@ -14,20 +14,20 @@
 
     var image = new Image();
     image.onload = function() {
+        canvas.width = image.width;
+        canvas.height = image.height;
         ctx.drawImage(image, 0, 0);
     };
 
     document.addEventListener("DOMContentLoaded", function(event) {
         var socket = new WebSocket("ws://" + window.location.host + "/ws/view");
         socket.onmessage = function(data) {
-            /*try {
+            try {
                 var info = JSON.parse(data.data);
-                image.src = "data:image/png;base64," + info.data;
-                console.log("data:image/png;base64," + info.data);
+                image.src = "data:image/jpeg;base64," + info.data;
             } catch(err) {
                 console.log("JSON Parse failed");
-            }*/
-            image.src = "data:image/jpeg;base64," + data.data;
+            }
         }
     });
 </script>

@@ -32,9 +32,8 @@ ws = websocket.WebSocketApp("ws://" + sys.argv[1] + "/ws/stream")
 wst = threading.Thread(target=ws.run_forever)
 wst.daemon = True
 wst.start()"""
-
 with picamera.PiCamera() as camera:
-    camera.resolution = (1080, 720)
+    camera.resolution = (378, 252)
     camera.framerate = 20
 
     time.sleep(2)
@@ -43,7 +42,8 @@ with picamera.PiCamera() as camera:
     for frame in camera.capture_continuous(stream, format="jpeg",
                                            use_video_port=True):
         stream.seek(0)
-        print base64.b64encode(stream.read())
+        data = stream.read()
+        print base64.b64encode(data)
 
         stream.seek(0)
         stream.truncate()
