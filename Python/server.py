@@ -1,11 +1,8 @@
 import camera
-import threading
 from flask import Flask, render_template, Response, request, jsonify
 
 app = Flask(__name__)
-
-cameraThread = threading.Thread(target=camera.start)
-cameraThread.start()
+lastFrame = None
 
 
 @app.route('/')
@@ -16,11 +13,11 @@ def index():
 def gen():
     while True:
         yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + camera.lastFrame +
+               b'Content-Type: image/jpeg\r\n\r\n' + lastFrame +
                b'\r\n\r\n')
 
 
-@app.route('/video_feed')
+@app.route('/feed')
 def video_feed():
     return Response(gen(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
