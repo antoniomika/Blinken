@@ -5,7 +5,8 @@ import base64
 import server
 import picamera
 import threading
-from websocket import create_connection
+# from websocket import create_connection
+import websockets
 
 lastFrame = ""
 
@@ -14,7 +15,9 @@ lastFrame = ""
                                                port=8080))
 webserverThread.start()"""
 
-ws = create_connection("ws://" + sys.argv[1] + "/ws/stream")
+# ws = create_connection("ws://" + sys.argv[1] + "/ws/stream")
+
+ws = websockets.client.connect("ws://" + sys.argv[1] + "/ws/stream")
 
 with picamera.PiCamera() as camera:
     camera.resolution = (1080, 720)
