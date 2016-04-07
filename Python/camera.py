@@ -5,19 +5,17 @@ import base64
 import server
 import picamera
 import threading
-# from websocket import create_connection
-import websockets
+from websocket import create_connection
 
 lastFrame = ""
 
-"""webserverThread = threading.Thread(target=server.app.run,
+webserverThread = threading.Thread(target=server.app.run,
                                    kwargs=dict(threaded=True, host="0.0.0.0",
                                                port=8080))
-webserverThread.start()"""
+webserverThread.start()
 
-# ws = create_connection("ws://" + sys.argv[1] + "/ws/stream")
-
-ws = websockets.client.connect("ws://" + sys.argv[1] + "/ws/stream")
+wsThread = threading.Thread(target=sendData)
+wsThread.start()
 
 with picamera.PiCamera() as camera:
     camera.resolution = (1080, 720)
@@ -32,7 +30,12 @@ with picamera.PiCamera() as camera:
         stream.seek(0)
         server.lastFrame = stream.read()
 
-        ws.send(base64.b64encode(server.lastFrame))
-
         stream.seek(0)
         stream.truncate()
+
+
+def sendData():
+    ws = create_connection("ws://" + sys.argv[1] + "/ws/stream")
+    while True:
+        if server.lastFrame is not None:
+            ws.send(base64.b64encode(server.lastFrame))
