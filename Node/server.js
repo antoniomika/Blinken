@@ -35,7 +35,6 @@ wss.on('connection', function connection(ws) {
             break;
         case "/ws/stream":
             ws.on("message", function(message) {
-                console.log(wss.clients.length);
                 wss.clients.forEach(function each(client) {
                     if (client.readyState == WebSocket.OPEN) {
                         var location = url.parse(client.upgradeReq.url, true);
