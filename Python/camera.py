@@ -7,6 +7,13 @@ import picamera
 import threading
 from websocket import create_connection
 
+
+def sendData():
+    ws = create_connection("ws://" + sys.argv[1] + "/ws/stream")
+    while True:
+        if server.lastFrame is not None:
+            ws.send(base64.b64encode(server.lastFrame))
+
 lastFrame = ""
 
 webserverThread = threading.Thread(target=server.app.run,
@@ -32,10 +39,3 @@ with picamera.PiCamera() as camera:
 
         stream.seek(0)
         stream.truncate()
-
-
-def sendData():
-    ws = create_connection("ws://" + sys.argv[1] + "/ws/stream")
-    while True:
-        if server.lastFrame is not None:
-            ws.send(base64.b64encode(server.lastFrame))
