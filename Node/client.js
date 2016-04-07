@@ -12,13 +12,18 @@ ws.on('open', function() {
     child.stdout.on("data", function(data) {
         var sendData = data.toString();
         if(sendData.length >= 65535) {
-            heldFrame = sendData;
-        } else {
+            heldFrame = heldFrame + sendData;
+        } else if(sendData.length > 10) {
             ws.send(JSON.stringify({
                 "time": new Date().getTime(),
                 "data": heldFrame + sendData
             }));
             heldFrame = "";
+        } else {
+            ws.send(JSON.stringify({
+                "time": new Date().getTime(),
+                "data": sendData
+            }));
         }
     });
     child.on("error", function(err) { console.log(err); });

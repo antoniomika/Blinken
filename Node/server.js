@@ -6,6 +6,7 @@ var newrelic = require('newrelic'),
     server = http.createServer(app),
     morgan = require('morgan'),
     bodyParser = require('body-parser'),
+    WebSocket = require('ws'),
     WebSocketServer = require('ws').Server,
     wss = new WebSocketServer({
         server: server
@@ -29,21 +30,23 @@ wss.on('connection', function connection(ws) {
     var location = url.parse(ws.upgradeReq.url, true);
     var uip = ws.upgradeReq.headers['x-forwarded-for'] || ws.upgradeReq.connection.remoteAddress;
 
-    switch(location["pathname"]) {
+    switch (location["pathname"]) {
         case "/ws/view":
             break;
         case "/ws/stream":
             ws.on("message", function(message) {
                 console.log(wss.clients.length);
                 wss.clients.forEach(function each(client) {
-                    var location = url.parse(client.upgradeReq.url, true);
+                    if (client.readyState == WebSocket.OPEN) {
+                        var location = url.parse(client.upgradeReq.url, true);
 
-                    switch(location["pathname"]) {
-                        case "/ws/view":
-                            client.send(message);
-                            break;
-                        default:
-                            break;
+                        switch (location["pathname"]) {
+                            case "/ws/view":
+                                client.send(message);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 });
             })

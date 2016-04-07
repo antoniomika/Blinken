@@ -34,6 +34,7 @@ wst.daemon = True
 wst.start()"""
 with picamera.PiCamera() as camera:
     camera.resolution = (378, 252)
+    # camera.resolution = (1920, 1080)
     camera.framerate = 20
 
     time.sleep(2)
