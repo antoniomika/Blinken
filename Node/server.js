@@ -30,8 +30,23 @@ wss.on('connection', function connection(ws) {
     var location = url.parse(ws.upgradeReq.url, true);
     var uip = ws.upgradeReq.headers['x-forwarded-for'] || ws.upgradeReq.connection.remoteAddress;
 
-    switch (location["pathname"]) {
+    switch (location.pathname) {
         case "/ws/view":
+            ws.on("message", function(message) {
+                wss.clients.forEach(function each(client) {
+                    if (client.readyState == WebSocket.OPEN) {
+                        var location = url.parse(client.upgradeReq.url, true);
+
+                        switch (location.pathname) {
+                            case "/ws/stream":
+                                client.send(message);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+            });
             break;
         case "/ws/stream":
             ws.on("message", function(message) {
@@ -39,7 +54,7 @@ wss.on('connection', function connection(ws) {
                     if (client.readyState == WebSocket.OPEN) {
                         var location = url.parse(client.upgradeReq.url, true);
 
-                        switch (location["pathname"]) {
+                        switch (location.pathname) {
                             case "/ws/view":
                                 client.send(message);
                                 break;
@@ -48,7 +63,7 @@ wss.on('connection', function connection(ws) {
                         }
                     }
                 });
-            })
+            });
             break;
         default:
             ws.close();

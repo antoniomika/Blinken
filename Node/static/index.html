@@ -1,6 +1,20 @@
 <html>
 
 <head>
+    <style>
+        canvas {
+            -webkit-transform: translateY(-100%) rotate(90deg);
+            -moz-transform: translateY(-100%) rotate(90deg);
+            -ms-transform: translateY(-100%) rotate(90deg);
+            -o-transform: translateY(-100%) rotate(90deg);
+            transform: translateY(-100%) rotate(90deg);
+            -webkit-transform-origin: left bottom;
+            -moz-transform-origin: left bottom;
+            -ms-transform-origin: left bottom;
+            -o-transform-origin: left bottom;
+            transform-origin: left bottom;
+        }
+    </style>
 </head>
 
 <body>
@@ -20,12 +34,12 @@
     };
 
     document.addEventListener("DOMContentLoaded", function(event) {
-        var socket = new WebSocket("ws://" + window.location.host + "/ws/view");
+        socket = new WebSocket("ws://" + window.location.host + "/ws/view");
         socket.onmessage = function(data) {
             try {
                 var info = JSON.parse(data.data);
                 image.src = "data:image/jpeg;base64," + info.data;
-            } catch(err) {
+            } catch (err) {
                 console.log("JSON Parse failed");
             }
         }
